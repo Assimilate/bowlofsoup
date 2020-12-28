@@ -1,18 +1,20 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <Board> </Board>
+    <ScoreBoard> </ScoreBoard>
+    <ShootBall> </ShootBall>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Board from "../components/Board.vue"; // @ is an alias to /src
-
+import ScoreBoard from "../components/Score/ScoreBoard.vue"; // @ is an alias to /src
+import ShootBall from "../components/Shoot/ShootBall.vue";
 export default defineComponent({
   name: "Home",
   components: {
-    Board,
+    ScoreBoard,
+    ShootBall,
   },
 });
 </script>

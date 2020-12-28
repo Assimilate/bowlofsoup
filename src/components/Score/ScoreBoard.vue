@@ -1,32 +1,24 @@
 <template>
   <div>
-    <Round :rounds="rounds"></Round>
+    <ScoreFrame v-if="frames" :frames="frames"></ScoreFrame>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Round from "./Round.vue";
+import ScoreFrame from "../Score/ScoreFrame.vue";
 export default defineComponent({
-  name: "Board",
+  name: "ScoreBoard",
   components: {
-    Round,
+    ScoreFrame,
   },
   data() {
     return {
-      rounds: [
-        {
-          type: Object,
-          score1: 10,
-          score2: 5,
-        },
-        {
-          type: Object,
-          score1: 10,
-          score2: 5,
-        },
-      ],
+      frames: undefined as unknown,
     };
+  },
+  created() {
+    this.frames = this.$store.state.scoreBoard;
   },
 });
 </script>

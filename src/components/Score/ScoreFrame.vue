@@ -1,23 +1,23 @@
 <template>
   <div class="page--center">
-    <div v-for="round in rounds" :key="round.nr" class="round">
-      <Score :value="round.score1"></Score>
-      <Score :value="round.score2"></Score>
+    <div v-for="frame in frames" :key="frame.nr" class="round">
+      <ScoreCell :value="frame.score1"></ScoreCell>
+      <ScoreCell :value="frame.score2"></ScoreCell>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Score from "./Score.vue";
+import ScoreCell from "../Score/ScoreCell.vue";
 
 export default defineComponent({
   name: "Round",
   components: {
-    Score,
+    ScoreCell,
   },
   props: {
-    rounds: {
+    frames: {
       type: Array,
     },
   },
