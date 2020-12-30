@@ -1,60 +1,22 @@
 <template>
   <div class="button-area">
     <button class="button-area__button" @click="shoot">
-      {{ showScore() }}
+      <p class="button-area__hole">{{ ballHoles }}</p>
+      <p class="button-area__hole">{{ thumbHole }}</p>
     </button>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-
+import { Vue, Options } from "vue-class-component";
+@Options({
+  emits: ["shoot"],
+})
 export default class ShootBall extends Vue {
-  // Variables
-  name = "ShootBall";
-  score = null as unknown;
-  whichFrame = 0 as number;
-  minimumScore = 0;
-  maximumScore = 10;
-  // Methods
+  thumbHole = ".";
+  ballHoles = ". .";
   shoot() {
-    const score = this.getScore();
-    let frame = this.getFrame();
-    frame = this.setScoreInFrame(frame, score);
-    this.setFrame(frame);
-    this.score = score;
-  }
-  getScore() {
-    const score =
-      Math.floor(Math.random() * this.maximumScore + 1) + this.minimumScore;
-    return score;
-  }
-  getFrame() {
-    return this.$store.getters.getFrame(this.whichFrame);
-  }
-  setFrame(frame: any) {
-    this.$store.commit("setFrame", frame);
-  }
-  setScoreInFrame(frame: any, score: number) {
-    if (frame.score1 === undefined) {
-      if (score === 10) {
-        frame.score1 = "";
-        frame.score2 = "X";
-        return;
-      }
-      frame.score1 = score;
-    } else if (frame.score2 == undefined) {
-      frame.score2 = score;
-      this.whichFrame++;
-    }
-    return frame;
-  }
-  showScore() {
-    if (this.score !== undefined) {
-      return this.score;
-    } else {
-      return "Shoot";
-    }
+    this.$emit("shoot");
   }
 }
 </script>
@@ -74,5 +36,12 @@ export default class ShootBall extends Vue {
   font-family: sans-serif;
   font-size: 1rem;
   outline: none;
+}
+
+.button-area__hole {
+  width: 100%;
+  height: 20%;
+  font-weight: bold;
+  font-size: 2rem;
 }
 </style>

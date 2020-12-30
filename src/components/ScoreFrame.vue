@@ -1,12 +1,18 @@
 <template>
   <div class="page--center">
-    <div v-for="frame in frames" :key="frame.nr" class="frame">
-      <div class="frame__score">
-        <ScoreCell :value="frame.score1"></ScoreCell>
-        <ScoreCell :value="frame.score2"></ScoreCell>
-      </div>
-      <div class="frame__total-score">
-        <ScoreCell :value="frame.totalScore"></ScoreCell>
+    <div v-for="frame in scoreBoard" :key="frame.frameNr">
+      <div class="frame">
+        <div class="frame__score">
+          <ScoreCell :value="frame.score1"></ScoreCell>
+          <ScoreCell :value="frame.score2"></ScoreCell>
+          <ScoreCell
+            v-if="frame.frameNr === 9"
+            :value="frame.score3"
+          ></ScoreCell>
+        </div>
+        <div class="frame__total-score">
+          <ScoreCell :value="frame.totalScore"></ScoreCell>
+        </div>
       </div>
     </div>
   </div>
@@ -21,7 +27,7 @@ import ScoreCell from "@/components/ScoreCell.vue";
     ScoreCell,
   },
   props: {
-    frames: {
+    scoreBoard: {
       type: Array,
     },
   },
