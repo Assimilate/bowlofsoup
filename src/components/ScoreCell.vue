@@ -1,21 +1,24 @@
 <template>
-  <div class="score-cell score-cell--center-content">{{ value }}</div>
+  <div class="score-cell score-cell--center-content">
+    <p>{{ value }}</p>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { Options, Vue } from "vue-class-component";
 
-export default defineComponent({
+@Options({
   name: "ScoreCell",
   props: {
     value: Number,
   },
-});
+})
+export default class ScoreCell extends Vue {}
 </script>
 
 <style lang="scss" scoped>
 .score-cell {
-  width: 50%;
+  width: 100%;
   height: 100%;
   border: 1px solid black;
 }
