@@ -1,20 +1,13 @@
 import { mount } from "@vue/test-utils";
-import { createStore, MutationTree, Store } from "vuex";
-import ScoreBoard from "@/components/Score/ScoreBoard.vue";
+import { createStore, MutationTree } from "vuex";
+import Home from "@/views/Home.vue";
+import ScoreBoard from "@/components/ScoreBoard.vue";
+import ScoreFrame from "@/components/ScoreFrame.vue";
 import { IFrame } from "@/types/frame";
-
-describe("ScoreBoard.vue", () => {
-  let store: any;
-  const mutations: MutationTree<any> = {
-    setFrame: (state: any, frame: IFrame) => {
-      state.scoreBoard[frame.frameNr] = frame;
-    },
-  };
-
-  beforeEach(() => {
-    store = createStore({
-      mutations,
-      state: {
+const createVuexStore = () => {
+  return createStore({
+    state() {
+      return {
         scoreBoard: [
           {
             frameNr: 0,
@@ -74,31 +67,51 @@ describe("ScoreBoard.vue", () => {
             frameNr: 9,
             score1: undefined,
             score2: undefined,
+            score3: undefined,
             totalScore: undefined,
           },
         ],
+      };
+    },
+    mutations: {
+      setFrame: (state: any, frame: IFrame) => {
+        state.scoreBoard[frame.frameNr] = frame;
       },
-    });
+    },
+    getters: {
+      getFrame: (state) => (frame: number) => {
+        return state.scoreBoard[frame];
+      },
+      getScoreBoard: (state) => (scoreBoard: Array<IFrame>) => {
+        return state.scoreBoard;
+      },
+    },
+  });
+};
+const store = createVuexStore();
+function factory() {
+  return mount(Home, {
+    global: {
+      plugins: [store],
+    },
+  });
+}
+
+describe("ScoreBoard.vue", () => {
+  test("ScoreBoard initially is mounted", () => {
+    const wrapper = factory();
+    const scoreBoard = wrapper.findComponent(ScoreBoard);
+    expect(scoreBoard.exists()).toBe(true);
   });
 
-  test("Mock store initialized", () => {
-    const wrapper = mount(ScoreBoard, {
-      global: { plugins: [store] },
-    });
-    expect(wrapper.vm.scoreBoard.length).toBe(10);
+  test("ScoreBoard initially has props", () => {
+    const wrapper = factory();
+    const scoreBoard = wrapper.findComponent(ScoreBoard);
+    expect(scoreBoard.props().scoreBoard).toBe(store.state.scoreBoard);
   });
 
-  test("Test frame 0 set with values", () => {
-    const wrapper = mount(ScoreBoard, {
-      global: { plugins: [store] },
-    });
-    let frameToSet = {
-      frameNr: 0,
-      score1: 5,
-      score2: 4,
-      totalScore: 9,
-    };
-    store.commit("setFrame", frameToSet);
-    expect(wrapper.vm.scoreBoard[0].score1).toBe(5);
+  test("ScoreBoard initially has 10 frames", () => {
+    const wrapper = factory();
+    expect(wrapper.findAllComponents(ScoreFrame).length).toBe(10);
   });
 });

@@ -1,6 +1,11 @@
 <template>
-  <div>
-    <ScoreFrame v-if="scoreBoard" :scoreBoard="scoreBoard"></ScoreFrame>
+  <div class="score-board score-board--center">
+    <ScoreFrame
+      v-for="frame in scoreBoard"
+      :key="frame.frameNr"
+      :frame="frame"
+      class="frame"
+    ></ScoreFrame>
   </div>
 </template>
 
@@ -26,4 +31,18 @@ export default class ScoreBoard extends Vue {}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.page--center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.score-board {
+  display: flex;
+}
+.frame {
+  width: 10%;
+  height: 5rem;
+  margin: 0.2rem;
+}
+</style>
