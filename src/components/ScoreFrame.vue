@@ -15,7 +15,6 @@
 import { Options, Vue } from "vue-class-component";
 import ScoreCell from "@/components/ScoreCell.vue";
 @Options({
-  name: "Frame",
   components: {
     ScoreCell,
   },

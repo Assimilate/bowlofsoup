@@ -16,7 +16,6 @@ import ExtraScoreFrame from "@/components/ScoreFrame.vue";
 import { IFrame } from "@/types/frame";
 
 @Options({
-  name: "ScoreBoard",
   components: {
     ScoreFrame,
     ExtraScoreFrame,
