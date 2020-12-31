@@ -9,7 +9,7 @@ import { Options, Vue } from "vue-class-component";
 
 @Options({
   props: {
-    value: Number,
+    value: [Number, String],
   },
 })
 export default class ScoreCell extends Vue {}
