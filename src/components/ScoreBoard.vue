@@ -13,7 +13,7 @@
 import { Options, Vue } from "vue-class-component";
 import ScoreFrame from "@/components/ScoreFrame.vue";
 import ExtraScoreFrame from "@/components/ScoreFrame.vue";
-import { IFrame } from "@/types/frame";
+import { IFrame } from "@/interfaces/frame.interface";
 
 @Options({
   components: {

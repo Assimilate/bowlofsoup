@@ -3,7 +3,7 @@ import { createStore, MutationTree } from "vuex";
 import Home from "@/views/Home.vue";
 import ScoreBoard from "@/components/ScoreBoard.vue";
 import ScoreFrame from "@/components/ScoreFrame.vue";
-import { IFrame } from "@/types/frame";
+import { IFrame } from "@/interfaces/frame.interface";
 const createVuexStore = () => {
   return createStore({
     state() {

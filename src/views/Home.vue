@@ -14,8 +14,9 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import ScoreBoard from "@/components/ScoreBoard.vue"; // @ is an alias to /src
+import { BowlingScore } from "@/utils/bowling.enum";
 import ShootBall from "@/components/ShootBall.vue";
-import { IFrame } from "@/types/frame";
+import { IFrame } from "@/interfaces/frame.interface";
 import API from "@/API/calculate";
 
 @Options({
@@ -26,6 +27,7 @@ import API from "@/API/calculate";
 })
 export default class Home extends Vue {
   scoreBoard: Array<IFrame> = [];
+  gameFinished = false;
   currentFrame = 0; // Start Frame
   minBowlScore = 0;
   maxBowlScore = 10;
@@ -35,16 +37,31 @@ export default class Home extends Vue {
   }
   async calculate() {
     // Send API request
-    const currentScoreBoard: Array<IFrame> = this.$store.getters.getScoreBoard();
-    const bowlScore: number = this.getBowlScore();
-    const response = await API.calculateFrame(
-      currentScoreBoard[this.currentFrame],
-      bowlScore
-    );
-    if (!this.isLastFrame() && this.frameFinished(this.currentFrame)) {
-      this.currentFrame++; // Second score was bowled, next round its a new frame.
+    console.log("Current frame", this.currentFrame);
+    if (!this.gameFinished) {
+      let currentScoreBoard: Array<IFrame> = this.$store.getters.getScoreBoard();
+      const bowlScore: number = this.getBowlScore();
+      let response = await API.calculateFrame(
+        currentScoreBoard[this.currentFrame],
+        bowlScore
+      );
+      this.$store.commit("setFrame", response);
+
+      currentScoreBoard = this.$store.getters.getScoreBoard();
+      response = await API.calculate(currentScoreBoard);
+      this.$store.commit("setScoreBoard", response);
+      // console.log("Current Score Board", response);
+
+      if (this.frameFinished(this.currentFrame)) {
+        if (this.isLastFrame(this.currentFrame)) {
+          this.finishGame();
+        } else {
+          this.currentFrame++; // Second score was bowled, next round its a new frame.
+        }
+      }
+    } else {
+      // Game is finished, do nothing.
     }
-    this.$store.commit("setFrame", response);
   }
   getBowlScore(): number {
     let newBowlScore = this.getRandomNr();
@@ -60,12 +77,33 @@ export default class Home extends Vue {
       return newBowlScore;
     }
   }
+  finishGame() {
+    this.gameFinished = true;
+    console.log("GAME FINISHED!");
+  }
   frameFinished(currentFrame: number) {
     const frame = this.scoreBoard[currentFrame];
-    return frame.score1 !== null && frame.score2 !== null;
+    let isFinished = false;
+    if (
+      this.isLastFrame(currentFrame) &&
+      frame.score1 === BowlingScore.STRIKE
+    ) {
+      if (
+        frame.score1 !== null &&
+        frame.score2 !== null &&
+        frame.score3 !== null
+      ) {
+        isFinished = true;
+      }
+    } else {
+      if (frame.score1 !== null && frame.score2 !== null) {
+        isFinished = true;
+      }
+    }
+    return isFinished;
   }
-  isLastFrame() {
-    return this.currentFrame === this.scoreBoard.length;
+  isLastFrame(currentFrame: number): boolean {
+    return currentFrame === this.scoreBoard.length - 1;
   }
   pinsLeft(maxBowlScore: number, previousBowlScore: number): number {
     return maxBowlScore - previousBowlScore;
