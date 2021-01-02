@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <h1 class="page-title">Bowl Of Soup</h1>
     <img
       class="home-image"
       src="https://www.clipartmax.com/png/small/102-1025011_soup-bowl-idle-soup-can-bfdi.png"
@@ -28,96 +29,62 @@ import API from "@/API/calculate";
 export default class Home extends Vue {
   scoreBoard: Array<IFrame> = [];
   gameFinished = false;
-  currentFrame = 0; // Start Frame
+  currentFrameIndex = 0; // Start Frame
   minBowlScore = 0;
-  maxBowlScore = 10;
+  maxBowlScore = BowlingScore.STRIKE;
+  amountOfPinsLeft = 10; // Starts out with 10 pins
   bowlScore: number | undefined = undefined;
   created() {
     this.scoreBoard = this.$store.getters.getScoreBoard();
   }
   async calculate() {
     // Send API request
-    console.log("Current frame", this.currentFrame);
+    console.log("Current frame", this.currentFrameIndex);
     if (!this.gameFinished) {
-      let currentScoreBoard: Array<IFrame> = this.$store.getters.getScoreBoard();
-      const bowlScore: number = this.getBowlScore();
-      let response = await API.calculateFrame(
-        currentScoreBoard[this.currentFrame],
-        bowlScore
-      );
+      this.scoreBoard = this.$store.getters.getScoreBoard();
+      let currentFrame = this.scoreBoard[this.currentFrameIndex];
+
+      const bowlScore: number = this.bowl();
+      let response = await API.renderFrame(currentFrame, bowlScore);
       this.$store.commit("setFrame", response);
+      currentFrame = this.scoreBoard[this.currentFrameIndex]; // Current frame was re-rendered and needs to be retrieved again
 
-      currentScoreBoard = this.$store.getters.getScoreBoard();
-      response = await API.calculate(currentScoreBoard);
+      this.scoreBoard = this.$store.getters.getScoreBoard();
+      response = await API.calculate(this.scoreBoard);
       this.$store.commit("setScoreBoard", response);
-      // console.log("Current Score Board", response);
 
-      if (this.frameFinished(this.currentFrame)) {
-        if (this.isLastFrame(this.currentFrame)) {
+      if (currentFrame.isFinished) {
+        if (this.isLastFrame(currentFrame)) {
           this.finishGame();
         } else {
-          this.currentFrame++; // Second score was bowled, next round its a new frame.
+          this.nextFrame();
         }
       }
     } else {
       // Game is finished, do nothing.
+      console.log("Game is finished...");
     }
   }
-  getBowlScore(): number {
-    let newBowlScore = this.getRandomNr();
-    const previousBowlScore = this.getPreviousBowlScore();
-    if (!previousBowlScore) {
-      return newBowlScore;
-    } else {
-      do {
-        newBowlScore = this.getRandomNr();
-      } while (
-        newBowlScore > this.pinsLeft(this.maxBowlScore, previousBowlScore)
-      );
-      return newBowlScore;
-    }
+  bowl(): number {
+    const newBowlScore = this.getBowlScore(this.amountOfPinsLeft);
+    this.amountOfPinsLeft -= newBowlScore;
+    if (!this.amountOfPinsLeft) this.amountOfPinsLeft = 10;
+    return newBowlScore;
+  }
+  nextFrame() {
+    this.currentFrameIndex++;
+    this.amountOfPinsLeft = 10;
   }
   finishGame() {
     this.gameFinished = true;
     console.log("GAME FINISHED!");
   }
-  frameFinished(currentFrame: number) {
-    const frame = this.scoreBoard[currentFrame];
-    let isFinished = false;
-    if (
-      this.isLastFrame(currentFrame) &&
-      frame.score1 === BowlingScore.STRIKE
-    ) {
-      if (
-        frame.score1 !== null &&
-        frame.score2 !== null &&
-        frame.score3 !== null
-      ) {
-        isFinished = true;
-      }
-    } else {
-      if (frame.score1 !== null && frame.score2 !== null) {
-        isFinished = true;
-      }
-    }
-    return isFinished;
+  isLastFrame(frame: IFrame): boolean {
+    return frame.frameNr === this.scoreBoard.length - 1;
   }
-  isLastFrame(currentFrame: number): boolean {
-    return currentFrame === this.scoreBoard.length - 1;
-  }
-  pinsLeft(maxBowlScore: number, previousBowlScore: number): number {
-    return maxBowlScore - previousBowlScore;
-  }
-  getPreviousBowlScore(): number | undefined {
-    const frame = this.scoreBoard[this.currentFrame];
-    if (frame) {
-      if (frame.score1) return frame.score1 as number;
-      else return undefined;
-    }
-  }
-  getRandomNr() {
+  getBowlScore(amountOfPinsLeft: number) {
     return (
-      Math.floor(Math.random() * this.maxBowlScore + 1) + this.minBowlScore
+      Math.floor(Math.random() * (amountOfPinsLeft + 1)) + this.minBowlScore
     );
   }
 }
@@ -128,6 +95,6 @@ export default class Home extends Vue {
   background-image: none;
   width: 10rem;
   height: 10rem;
-  margin: 5rem;
+  margin: 2rem auto 2rem auto;
 }
 </style>

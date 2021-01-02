@@ -1,7 +1,7 @@
 <template>
   <div class="button-area">
     <button class="button-area__button" @click="shoot">
-      <p class="button-area__hole">{{ ballHoles }}</p>
+      <p class="button-area__hole">{{ indexHoles }}</p>
       <p class="button-area__hole">{{ thumbHole }}</p>
     </button>
   </div>
@@ -14,7 +14,7 @@ import { Vue, Options } from "vue-class-component";
 })
 export default class ShootBall extends Vue {
   thumbHole = ".";
-  ballHoles = ". .";
+  indexHoles = ". .";
   shoot() {
     this.$emit("shoot");
   }

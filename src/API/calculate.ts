@@ -10,7 +10,7 @@ export default {
     );
     return response.data;
   },
-  async calculateFrame(frame: IFrame, bowl: number) {
+  async renderFrame(frame: IFrame, bowl: number) {
     const response = await axios.post(`http://localhost:3000/calculate/frame`, {
       frame: frame,
       bowl: bowl,
