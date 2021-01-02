@@ -2,9 +2,7 @@
 
 ## Runs together with a NodeJS/NestJS server
 
-```
-https://github.com/Assimilate/bowlofserver
-```
+[Server](https://github.com/Assimilate/bowlofserver)
 
 ## Project setup
 
