@@ -97,6 +97,45 @@ function factory() {
   });
 }
 
+describe("Home.vue", () => {
+  test("When a bowling score is retrieved it should be less than or equal to the amount of pins left", () => {
+    const wrapper = factory();
+
+    let amountOfPinsLeft = 10;
+    wrapper.vm.amountOfPinsLeft = amountOfPinsLeft;
+    let bowlScore = wrapper.vm.getBowlScore(amountOfPinsLeft);
+    expect(bowlScore).toBeLessThanOrEqual(10);
+
+    amountOfPinsLeft = 5;
+    wrapper.vm.amountOfPinsLeft = amountOfPinsLeft;
+    bowlScore = wrapper.vm.getBowlScore(amountOfPinsLeft);
+    expect(bowlScore).toBeLessThanOrEqual(5);
+  });
+
+  test("After a bowling move is made there should be 10 or less pins left if its the first try", () => {
+    const wrapper = factory();
+    // New round initially
+    expect(wrapper.vm.amountOfPinsLeft).toBe(10);
+    wrapper.vm.bowl();
+    expect(wrapper.vm.amountOfPinsLeft).toBeLessThanOrEqual(10);
+  });
+
+  test("When it is a new frame/round the amount of pins left should be 10 and the current frame index should be one greater than before if not last frame", () => {
+    const wrapper = factory();
+
+    let currentFrameIndex = 2;
+    let nextFrameIndex = 3;
+    wrapper.vm.currentFrameIndex = currentFrameIndex;
+
+    let amountOfPinsLeft = 5;
+    wrapper.vm.amountOfPinsLeft = amountOfPinsLeft;
+
+    wrapper.vm.nextFrame();
+    expect(wrapper.vm.amountOfPinsLeft).toBe(10);
+    expect(wrapper.vm.currentFrameIndex).toBe(currentFrameIndex + 1);
+  });
+});
+
 describe("ScoreBoard.vue", () => {
   test("ScoreBoard initially is mounted", () => {
     const wrapper = factory();

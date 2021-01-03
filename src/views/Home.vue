@@ -47,12 +47,12 @@ export default class Home extends Vue {
       const bowlScore: number = this.bowl();
       let response = await API.renderFrame(currentFrame, bowlScore);
       this.$store.commit("setFrame", response);
-      currentFrame = this.scoreBoard[this.currentFrameIndex]; // Current frame was re-rendered and needs to be retrieved again
 
       this.scoreBoard = this.$store.getters.getScoreBoard();
       response = await API.calculate(this.scoreBoard);
       this.$store.commit("setScoreBoard", response);
 
+      currentFrame = this.scoreBoard[this.currentFrameIndex]; // Current frame was re-rendered and needs to be retrieved again
       if (currentFrame.isFinished) {
         if (this.isLastFrame(currentFrame)) {
           this.finishGame();
@@ -73,7 +73,7 @@ export default class Home extends Vue {
   }
   nextFrame() {
     this.currentFrameIndex++;
-    this.amountOfPinsLeft = 10;
+    this.amountOfPinsLeft = 10; // New frame/round, restock the pins
   }
   finishGame() {
     this.gameFinished = true;
