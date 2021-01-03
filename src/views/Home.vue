@@ -49,7 +49,6 @@ export default class Home extends Vue {
   }
   async calculate() {
     // Send API request
-    console.log("Current frame:", this.currentFrameIndex);
     if (!this.gameFinished) {
       this.scoreBoard = this.$store.getters.getScoreBoard();
       let currentFrame = this.scoreBoard[this.currentFrameIndex];
@@ -73,7 +72,6 @@ export default class Home extends Vue {
       }
     } else {
       // Game is finished, do nothing.
-      console.log("Game is finished...");
     }
   }
   bowl(): number {
@@ -104,6 +102,7 @@ export default class Home extends Vue {
     this.amountOfPinsLeft = 10;
     this.$store.commit("reset");
     this.gameFinished = false;
+    this.saveState();
   }
   saveState() {
     this.$store.commit("setAmountOfPinsLeft", this.amountOfPinsLeft);
