@@ -15,13 +15,27 @@ import { Vue, Options } from "vue-class-component";
 export default class ShootBall extends Vue {
   thumbHole = ".";
   indexHoles = ". .";
+  show = false;
+  mounted() {
+    this.animateBowlingBall();
+  }
   shoot() {
     this.$emit("shoot");
+  }
+  animateBowlingBall() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.show = true;
+        resolve(true);
+      }, 1000);
+    });
   }
 }
 </script>
 
 <style lang="scss" scoped>
+// Styling
+
 .button-area {
   margin: 2rem auto;
   width: 10rem;
@@ -29,6 +43,7 @@ export default class ShootBall extends Vue {
 }
 
 .button-area__button {
+  background-color: rgb(167, 13, 13);
   width: 50%;
   height: 50%;
   border-radius: 100rem;
@@ -40,7 +55,7 @@ export default class ShootBall extends Vue {
 
 .button-area__hole {
   width: 100%;
-  height: 20%;
+  height: 25%;
   font-weight: bold;
   font-size: 2rem;
 }

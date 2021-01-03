@@ -71,11 +71,40 @@ const createVuexStore = () => {
             totalScore: undefined,
           },
         ],
+        gameFinished: false,
+        amountOfPinsLeft: 10,
+        currentFrameIndex: 0,
       };
     },
     mutations: {
       setFrame: (state: any, frame: IFrame) => {
         state.scoreBoard[frame.frameNr] = frame;
+      },
+      setScoreBoard(state, scoreBoard) {
+        state.scoreBoard.splice(0, state.scoreBoard.length, ...scoreBoard);
+      },
+      reset(state) {
+        for (const frame of state.scoreBoard) {
+          frame.score1 = null;
+          frame.score1Render = "";
+          frame.score2 = null;
+          frame.score2Render = "";
+          frame.totalScore = 0;
+          frame.isFinished = false;
+          if (frame.frameNr === state.scoreBoard.length - 1) {
+            frame.score3 = null;
+            frame.score3Render = "";
+          }
+        }
+      },
+      setGameFinished(state, gameFinished) {
+        state.gameFinished = gameFinished;
+      },
+      setCurrentFrameIndex(state, currentFrameIndex) {
+        state.currentFrameIndex = currentFrameIndex;
+      },
+      setAmountOfPinsLeft(state, amountOfPinsLeft) {
+        state.amountOfPinsLeft = amountOfPinsLeft;
       },
     },
     getters: {
@@ -84,6 +113,15 @@ const createVuexStore = () => {
       },
       getScoreBoard: (state) => (scoreBoard: Array<IFrame>) => {
         return state.scoreBoard;
+      },
+      getGameFinished: (state) => (gameFinished: boolean) => {
+        return state.gameFinished;
+      },
+      getCurrentFrameIndex: (state) => (currentFrameIndex: number) => {
+        return state.currentFrameIndex;
+      },
+      getAmountOfPinsLeft: (state) => (amountOfPinsLeft: number) => {
+        return state.amountOfPinsLeft;
       },
     },
   });
@@ -143,7 +181,7 @@ describe("ScoreBoard.vue", () => {
     expect(scoreBoard.exists()).toBe(true);
   });
 
-  test("ScoreBoard initially has props", () => {
+  test("ScoreBoard initially has a score board as a property", () => {
     const wrapper = factory();
     const scoreBoard = wrapper.findComponent(ScoreBoard);
     expect(scoreBoard.props().scoreBoard).toBe(store.state.scoreBoard);

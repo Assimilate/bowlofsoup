@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="frame__title">{{ frame.frameNr + 1 }}</div>
     <div class="frame__score">
       <ScoreCell :value="frame.score1Render"></ScoreCell>
       <ScoreCell :value="frame.score2Render"></ScoreCell>
@@ -40,5 +41,13 @@ export default class Frame extends Vue {}
   display: flex;
   height: 50%;
   width: 100%;
+}
+
+.frame__title {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid black;
+  background-color: #ccc;
 }
 </style>

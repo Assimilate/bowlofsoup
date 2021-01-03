@@ -31,17 +31,18 @@ export default class ScoreBoard extends Vue {}
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.page--center {
+.score-board--center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .score-board {
   display: flex;
+  flex-wrap: wrap;
 }
 .frame {
-  width: 10%;
+  width: 18%;
   height: 5rem;
-  margin: 0.2rem;
+  margin: 1rem 1% 1rem 1%;
 }
 </style>
